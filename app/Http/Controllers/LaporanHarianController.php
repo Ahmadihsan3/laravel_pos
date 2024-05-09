@@ -19,6 +19,9 @@ class LaporanHarianController extends Controller
 
         // Mendapatkan sum order quantity untuk setiap produk pada tanggal yang dipilih
         $reportData = [];
+        $total_sales = 0;
+        $total_sales = OrderItem::whereDate('created_at', $date)->sum('total_price');
+
         foreach ($products as $product) {
             $totalOrderQuantity = OrderItem::whereHas('order', function ($query) use ($date) {
                 $query->whereDate('transaction_time', $date);
@@ -55,6 +58,6 @@ class LaporanHarianController extends Controller
         ];
 
         // Pass the $chartData variable to the view
-        return view('pages.laporan_harian.index', compact('chartData', 'date'));
+        return view('pages.laporan_harian.index', compact('chartData', 'date', 'total_sales'));
     }
 }

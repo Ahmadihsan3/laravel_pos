@@ -12,14 +12,17 @@
 
         .date-box {
             position: static;
-            top: 0px; /* Sesuaikan jarak dari atas */
-            right: 15px; /* Sesuaikan jarak dari kanan */
+            top: 0px;
+            /* Sesuaikan jarak dari atas */
+            right: 15px;
+            /* Sesuaikan jarak dari kanan */
             background-color: #ffffff;
             border: 1px solid #dddddd;
             padding: 10px;
             border-radius: 5px;
         }
-        .date-box > h3 {
+
+        .date-box>h3 {
             text-align: center;
         }
     </style>
@@ -41,7 +44,8 @@
                     <form action="{{ route('laporan_harian.index') }}" method="GET">
                         <div class="form-group">
                             <label for="date">Tanggal:</label>
-                            <input type="date" name="date" id="date" class="form-control" value="{{ $date }}">
+                            <input type="date" name="date" id="date" class="form-control"
+                                value="{{ $date }}">
                         </div>
                         <button type="submit" class="btn btn-primary">Tampilkan Laporan</button>
                     </form>
@@ -87,44 +91,42 @@
             return formatter.format(angka).replace(/^(\D+)/, '$1 ');
         }
 
-// Mengambil data yang dikirim dari controller
-var chartData = {!! json_encode($chartData) !!};
+        // Mengambil data yang dikirim dari controller
+        var chartData = {!! json_encode($chartData) !!};
 
-// Mendapatkan total keseluruhan dari data grafik
-var totalOrders = chartData.datasets[0].data.reduce((total, currentValue) => total + currentValue, 0);
+        // Mendapatkan total keseluruhan dari data grafik
+        var totalOrders = chartData.datasets[0].data.reduce((total, currentValue) => total + currentValue, 0);
 
-// Membuat grafik menggunakan Chart.js
-var ctx = document.getElementById('barChart').getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: chartData,
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        },
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        var label = context.dataset.label || '';
+        // Membuat grafik menggunakan Chart.js
+        var ctx = document.getElementById('barChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.dataset.label || '';
 
-                        if (label) {
-                            label += ': ';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.parsed.y.toLocaleString(); // Format angka tanpa koma
+                                return label;
+                            }
                         }
-                        label += context.parsed.y.toLocaleString(); // Format angka tanpa koma
-                        return label;
                     }
                 }
             }
-        }
-    }
-});
+        });
 
-// Menampilkan total keseluruhan dalam format rupiah
-document.getElementById('totalValue').textContent = formatRupiah(totalOrders);
-
-
+        // Menampilkan total keseluruhan dalam format rupiah
+        document.getElementById('totalValue').textContent = formatRupiah({!! $total_sales !!});
     </script>
 @endpush
